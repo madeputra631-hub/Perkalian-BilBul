@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eksplorasi Konsep Perkalian - Kelas 7 SMP</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca'
+            },
+            tealAccent: {
+              50: '#f0fdfa',
+              100: '#ccfbf1',
+              500: '#14b8a6',
+              600: '#0d9488'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .grid-cell-transition {
+      transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background-color: #cbd5e1;
+      border-radius: 9999px;
+    }
+    input[type=range] {
+      accent-color: #4f46e5;
+    }
+    .walker-bounce {
+      animation: bounce 0.6s infinite alternate;
+    }
+    @keyframes bounce {
+      from { transform: translateY(0); }
+      to { transform: translateY(-8px); }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col">
+
+  <header class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto px-4 py-3 sm:px-6 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-indigo-100">
+          <i data-lucide="calculator" class="w-5 h-5"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight">Lab Visual Perkalian</h1>
+          <p class="text-xs text-slate-500 font-medium">Matematika SMP Kelas 7 • Eksplorasi Interaktif</p>
+        </div>
+      </div>
+      
+      <!-- Top badges -->
+      <div class="hidden sm:flex items-center gap-2 text-xs font-semibold">
+        <span class="px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-100 flex items-center gap-1.5">
+          <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Model Visual Dinamis
+        </span>
+        <span class="px-2.5 py-1 rounded-full bg-teal-50 text-teal-700 border border-teal-100 flex items-center gap-1.5">
+          <i data-lucide="award" class="w-3.5 h-3.5"></i> Mandiri & Reflektif
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 py-6 sm:px-6 flex flex-col gap-6">
+    <!-- Mode Selector Tabs -->
+    <div class="flex bg-slate-200/80 p-1.5 rounded-2xl gap-1.5 overflow-x-auto custom-scrollbar shadow-inner">
+      <button onclick="switchTab('grup')" id="tab-btn-grup" class="tab-btn flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 bg-white text-indigo-700 shadow-sm">
+        <i data-lucide="layers" class="w-4 h-4"></i> Penjumlahan Berulang
+      </button>
+      <button onclick="switchTab('luas')" id="tab-btn-luas" class="tab-btn flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
+        <i data-lucide="grid-3x3" class="w-4 h-4"></i> Model Luas (Area Grid)
+      </button>
+      <button onclick="switchTab('bulat')" id="tab-btn-bulat" class="tab-btn flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
+        <i data-lucide="binary" class="w-4 h-4"></i> Bilangan Bulat (+ / -)
+      </button>
+      <button onclick="switchTab('kuis')" id="tab-btn-kuis" class="tab-btn flex-1 min-w-[170px] py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-200 flex items-center justify-center gap-2 text-slate-600 hover:text-slate-900">
+        <i data-lucide="gamepad-2" class="w-4 h-4"></i> Tantangan Kilat
+      </button>
+    </div>
+
+    <!-- TAB 1: Penjumlahan Berulang -->
+    <section id="tab-grup" class="tab-content block space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Control Card -->
+        <div class="lg:col-span-4 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between gap-5">
+          <div class="space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="sliders" class="w-4 h-4 text-indigo-600"></i> Kontrol Kelompok
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Atur berapa wadah dan isi tiap wadah</p>
+            </div>
+
+            <!-- Slider A -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-slate-700 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Banyak Kelompok (a):
+                </span>
+                <span id="label-group-a" class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">4</span>
+              </div>
+              <input type="range" id="input-group-a" min="1" max="10" value="4" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>1 kelompok</span>
+                <span>10 kelompok</span>
+              </div>
+            </div>
+
+            <!-- Slider B -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-slate-700 flex items-center gap-1.5">
+                  <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span> Isi per Kelompok (b):
+                </span>
+                <span id="label-group-b" class="font-mono font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded">3</span>
+              </div>
+              <input type="range" id="input-group-b" min="1" max="10" value="3" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>1 benda</span>
+                <span>10 benda</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Insight Card -->
+          <div class="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+            <span class="font-bold text-slate-700 flex items-center gap-1.5">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-indigo-600"></i> Prinsip Dasar:
+            </span>
+            <p class="text-slate-600 leading-relaxed">
+              Bentuk <span class="font-mono font-bold text-indigo-600">a &times; b</span> artinya menjumlahkan bilangan <span class="font-mono font-bold text-teal-600">b</span> sebanyak <span class="font-mono font-bold text-indigo-600">a</span> kali. Bukan menjumlahkan a sebanyak b kali!
+            </p>
+          </div>
+        </div>
+
+        <!-- Visual Board Card -->
+        <div class="lg:col-span-8 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between gap-6">
+          <div>
+            <!-- Live Formula Banner -->
+            <div class="bg-indigo-50/60 rounded-xl p-4 border border-indigo-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div>
+                <span class="text-xs uppercase tracking-wider font-bold text-indigo-500">Persamaan Aritmetika</span>
+                <div class="text-xl sm:text-2xl font-black text-slate-800 tracking-tight font-mono mt-0.5" id="group-equation-banner">
+                  <!-- Injected via JS -->
+                </div>
+              </div>
+              <div class="text-right flex md:flex-col items-baseline md:items-end justify-between border-t md:border-t-0 border-indigo-100 pt-2 md:pt-0">
+                <span class="text-xs font-semibold text-slate-500">Total Benda:</span>
+                <span id="group-total-badge" class="text-2xl sm:text-3xl font-black text-indigo-600 font-mono">12</span>
+              </div>
+            </div>
+
+            <!-- Group Visual Canvas -->
+            <div class="mt-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Visualisasi Wadah & Isi</h3>
+                <span class="text-xs text-slate-400">Tiap kotak merepresentasikan 1 kelompok</span>
+              </div>
+              <div id="group-visual-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 p-4 bg-slate-50 rounded-xl border border-dashed border-slate-300 min-h-[200px]">
+                <!-- Containers rendered here -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Textual Step-by-Step Breakdown -->
+          <div class="border-t border-slate-100 pt-3 text-xs text-slate-600 flex items-center justify-between">
+            <span id="group-text-description" class="italic font-medium"></span>
+            <span class="text-[11px] text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded-full">Konsep Dasar</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Model Luas / Grid -->
+    <section id="tab-luas" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Control Sidebar -->
+        <div class="lg:col-span-4 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between gap-5">
+          <div class="space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="maximize" class="w-4 h-4 text-indigo-600"></i> Dimensi Grid Luas
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Fondasi geometri & aljabar bentuk matriks</p>
+            </div>
+
+            <!-- Row Slider -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-slate-700 flex items-center gap-1.5">
+                  <i data-lucide="arrow-down-up" class="w-3.5 h-3.5 text-indigo-500"></i> Baris / Tinggi (p):
+                </span>
+                <span id="label-area-rows" class="font-mono font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">4</span>
+              </div>
+              <input type="range" id="input-area-rows" min="1" max="12" value="4" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>1 baris</span>
+                <span>12 baris</span>
+              </div>
+            </div>
+
+            <!-- Column Slider -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-slate-700 flex items-center gap-1.5">
+                  <i data-lucide="arrow-left-right" class="w-3.5 h-3.5 text-teal-500"></i> Kolom / Lebar (l):
+                </span>
+                <span id="label-area-cols" class="font-mono font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded">6</span>
+              </div>
+              <input type="range" id="input-area-cols" min="1" max="12" value="6" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>1 kolom</span>
+                <span>12 kolom</span>
+              </div>
+            </div>
+
+            <!-- Commutative Rotate Button -->
+            <button id="btn-rotate-grid" onclick="rotateGridDimensions()" class="w-full py-2.5 px-4 rounded-xl border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 text-indigo-700 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 transition duration-200">
+              <i data-lucide="refresh-cw" class="w-4 h-4 text-indigo-600"></i> Putar Grid (Sifat Komutatif: a &times; b = b &times; a)
+            </button>
+          </div>
+
+          <!-- Algebraic Preview Hint -->
+          <div class="p-3.5 rounded-xl bg-teal-50/60 border border-teal-200 text-xs space-y-1.5">
+            <span class="font-bold text-teal-800 flex items-center gap-1.5">
+              <i data-lucide="lightbulb" class="w-3.5 h-3.5 text-teal-600"></i> Jembatan ke Aljabar:
+            </span>
+            <p class="text-teal-900 leading-relaxed">
+              Jika panjang = <span class="font-mono font-bold">x</span> dan lebar = <span class="font-mono font-bold">3</span>, luasnya adalah <span class="font-mono font-bold">3x</span>. Memahami kotak satuan adalah kunci perkalian aljabar!
+            </p>
+          </div>
+        </div>
+
+        <!-- Grid Workspace -->
+        <div class="lg:col-span-8 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between gap-5">
+          <!-- Area Output Banner -->
+          <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            <div>
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wide">Rumus Luas Persegi Panjang</span>
+              <div class="text-xl sm:text-2xl font-black text-slate-800 font-mono" id="area-calc-text">
+                <!-- JS populated -->
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <div class="text-right">
+                <span class="text-xs text-slate-400 block font-medium">Hover Kotak:</span>
+                <span id="hover-coord-text" class="text-xs font-mono font-bold text-indigo-600">Arahkan kursor</span>
+              </div>
+              <div class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl font-mono text-center">
+                <span class="text-[10px] block opacity-80 uppercase tracking-wide">Total Luas</span>
+                <span id="area-total-badge" class="text-xl font-black">24</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Grid Matrix -->
+          <div class="overflow-x-auto custom-scrollbar p-4 bg-slate-100/60 rounded-xl border border-slate-200 flex items-center justify-center min-h-[300px]">
+            <div id="area-grid-element" class="inline-grid gap-1.5 p-2 bg-white rounded-xl shadow-sm border border-slate-200">
+              <!-- Dynamically generated grid tiles -->
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-500 flex items-center justify-between">
+            <span>Setiap ubin bernilai <strong>1 satuan luas</strong>.</span>
+            <span class="text-teal-700 font-medium bg-teal-50 px-2 py-0.5 rounded">Baris &times; Kolom</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: Bilangan Bulat -->
+    <section id="tab-bulat" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Control Card -->
+        <div class="lg:col-span-4 bg-white rounded-2xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between gap-5">
+          <div class="space-y-4">
+            <div class="border-b border-slate-100 pb-3">
+              <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+                <i data-lucide="plus-slash-minus" class="w-4 h-4 text-indigo-600"></i> Pengali Bilangan Bulat
+              </h2>
+              <p class="text-xs text-slate-500 mt-0.5">Eksplorasi tanda positif (+) dan negatif (&minus;)</p>
+            </div>
+
+            <!-- Factor 1 Slider -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-slate-700">Faktor 1 (Arah / Langkah):</span>
+                <span id="label-factor-1" class="font-mono font-bold px-2 py-0.5 rounded text-indigo-600 bg-indigo-50">+3</span>
+              </div>
+              <input type="range" id="input-factor-1" min="-7" max="7" value="3" step="1" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>-7 (Mundur)</span>
+                <span>0</span>
+                <span>+7 (Maju)</span>
+              </div>
+            </div>
+
+            <!-- Factor 2 Slider -->
+            <div class="space-y-1.5">
+              <div class="flex justify-between items-center text-sm">
+                <span class="font-medium text-slate-700">Faktor 2 (Ukuran Langkah):</span>
+                <span id="label-factor-2" class="font-mono font-bold px-2 py-0.5 rounded text-teal-600 bg-teal-50">-4</span>
+              </div>
+              <input type="range" id="input-factor-2" min="-7" max="7" value="-4" step="1" class="w-full h-2 bg-slate-200 rounded-lg cursor-pointer">
+              <div class="flex justify-between text-[10px] text-slate-400 font-mono">
+                <span>-7 (Balik Kiri)</span>
+                <span>0</span>
+                <span>+7 (Hadap Kanan)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rules Summary Box -->
+          <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200 text-xs space-y-2">
+            <span class="font-bold text-slate-700 block">Aturan Tanda Perkalian:</span>
+            <div class="grid grid-cols-2 gap-2 font-mono text-[11px]">
+              <div id="rule-pos-pos" class="p-1.5 rounded bg-white border border-slate-200 text-slate-600 text-center">(+) &times; (+) = <strong>(+)</strong></div>
+              <div id="rule-pos-neg" class="p-1.5 rounded bg-white border border-slate-200 text-slate-600 text-center">(+) &times; (&minus;) = <strong>(&minus;)</strong></div>
+              <div id="rule-neg-pos" class="p-1.5 rounded bg-white border border-slate-200 text-slate-600 text-center">(&minus;) &times; (+) = <strong>(&minus;)</strong></div>
+              <div id="rule-neg-neg" class="p-1.5 rounded bg-white border border-slate-200 text-slate-600 text-center">(&minus;) &times; (&minus;) = <strong>(+)</strong></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulation View -->
+        <div class="lg:col-span-8 bg-white rounded-2xl p-5 sm:p-6 border border-slate-200 shadow-sm flex flex-col justify-between gap-6">
+          <div>
+            <!-- Banner Result -->
+            <div class="bg-indigo-50/60 p-4 rounded-xl border border-indigo-100 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <span class="text-xs uppercase tracking-wider font-bold text-indigo-500">Operasi Perkalian Tanda</span>
+                <div class="text-2xl font-black text-slate-900 font-mono mt-0.5" id="integer-equation-banner">
+                  (+3) &times; (-4) = -12
+                </div>
+              </div>
+              <div class="bg-white px-3 py-1.5 rounded-xl border border-indigo-200 text-right">
+                <span class="text-[10px] block text-slate-400 font-medium">Hasil Akhir:</span>
+                <span id="integer-result-value" class="text-2xl font-black font-mono text-rose-600">-12</span>
+              </div>
+            </div>
+
+            <!-- Analogi Naratif -->
+            <div class="mt-4 p-3.5 bg-amber-50 rounded-xl border border-amber-200/80 text-xs text-amber-900 leading-relaxed flex items-start gap-2.5">
+              <i data-lucide="compass" class="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0"></i>
+              <div>
+                <span class="font-bold">Analogi Orang Berjalan:</span>
+                <p id="integer-analogy-text" class="mt-0.5 text-amber-800">
+                  Maju 3 kali, tiap kali mengambil 4 langkah mundur. Kamu berakhir di angka -12.
+                </p>
+              </div>
+            </div>
+
+            <!-- Number Line Visualization Container -->
+            <div class="mt-6">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wide">Garis Bilangan Interaktif</span>
+                <span class="text-xs text-slate-400 font-mono">Rentang -49 s/d +49</span>
+              </div>
+              
+              <!-- SVG Number Line -->
+              <div class="w-full overflow-x-auto custom-scrollbar bg-slate-50 rounded-xl p-3 border border-slate-200">
+                <svg id="number-line-svg" class="w-full min-w-[620px] h-36 overflow-visible" viewBox="0 0 700 130">
+                  <!-- Rendered dynamically via JS -->
+                </svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-xs text-slate-500 flex items-center justify-between border-t border-slate-100 pt-3">
+            <span>Perhatikan bagaimana dua tanda negatif (&minus; &times; &minus;) membalik arah kembali menjadi positif (+).</span>
+            <span class="text-indigo-600 font-semibold bg-indigo-50 px-2 py-0.5 rounded">Materi Kelas 7</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: Mode Tantangan (Kuis Mandiri) -->
+    <section id="tab-kuis" class="tab-content hidden space-y-6">
+      <div class="max-w-3xl mx-auto w-full space-y-6">
+        <!-- Score Bar -->
+        <div class="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center font-black">
+              <i data-lucide="trophy" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <span class="text-xs text-slate-400 font-semibold">Skor Anda</span>
+              <div class="text-xl font-black text-slate-800 font-mono">
+                <span id="quiz-score" class="text-teal-600">0</span> <span class="text-slate-300">/</span> <span id="quiz-attempted">0</span> Soal
+              </div>
+            </div>
+          </div>
+          <button onclick="resetQuizScore()" class="text-xs text-slate-500 hover:text-rose-600 font-medium px-3 py-1.5 rounded-lg border border-slate-200 hover:border-rose-200 transition">
+            Reset Skor
+          </button>
+        </div>
+
+        <!-- Question Card -->
+        <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full" id="quiz-badge-type">
+              Tipe: Model Luas
+            </span>
+            <span class="text-xs text-slate-400 font-medium">Pilih atau isi jawaban yang tepat</span>
+          </div>
+
+          <!-- Dynamic Question Prompt -->
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-slate-900" id="quiz-question-prompt">
+              Berapa luas total dari grid persegi panjang berikut?
+            </h3>
+          </div>
+
+          <!-- Dynamic Visual Display for the Question -->
+          <div id="quiz-visual-stage" class="min-h-[160px] p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-200 flex items-center justify-center overflow-x-auto">
+            <!-- Question Visual inserted here -->
+          </div>
+
+          <!-- Choices or Input -->
+          <div id="quiz-choices-container" class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- Choice buttons injected here -->
+          </div>
+
+          <!-- Interactive Feedback Alert Box -->
+          <div id="quiz-feedback-box" class="hidden p-4 rounded-xl text-sm font-medium transition-all">
+            <!-- Feedback content injected here -->
+          </div>
+
+          <!-- Next Button -->
+          <div class="flex justify-end pt-2">
+            <button id="btn-next-question" onclick="generateNewQuestion()" class="py-2.5 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm flex items-center gap-2 shadow-sm transition">
+              Pertanyaan Berikutnya <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-white border-t border-slate-200 mt-auto py-4">
+    <div class="max-w-6xl mx-auto px-4 text-center text-xs text-slate-500 font-medium">
+      Dirancang untuk pembelajaran konsep Matematika SMP Kelas 7 • Pendekatan Konseptual & Visual Mandiri
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // App State
+    let currentTab = 'grup';
+    let groupA = 4;
+    let groupB = 3;
+
+    let areaRows = 4;
+    let areaCols = 6;
+
+    let intFactor1 = 3;
+    let intFactor2 = -4;
+
+    // Quiz State
+    let quizScoreCount = 0;
+    let quizAttemptsCount = 0;
+    let currentQuizAnswer = null;
+    let quizLocked = false;
+
+    // Available vibrant marble colors for groups
+    const marbleColors = [
+      'bg-indigo-500', 'bg-teal-500', 'bg-amber-500', 'bg-rose-500',
+      'bg-sky-500', 'bg-emerald-500', 'bg-violet-500', 'bg-orange-500'
+    ];
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-white', 'text-indigo-700', 'shadow-sm');
+        btn.classList.add('text-slate-600');
+      });
+
+      const activeSection = document.getElementById(`tab-${tabId}`);
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      if (activeSection) activeSection.classList.remove('hidden');
+      if (activeBtn) {
+        activeBtn.classList.add('bg-white', 'text-indigo-700', 'shadow-sm');
+        activeBtn.classList.remove('text-slate-600');
+      }
+
+      if (tabId === 'kuis' && quizAttemptsCount === 0) {
+        generateNewQuestion();
+      }
+
+      // Re-trigger icon rendering
+      setTimeout(() => {
+        if (window.lucide) lucide.createIcons();
+      }, 50);
+    }
+
+    const inputGroupA = document.getElementById('input-group-a');
+    const inputGroupB = document.getElementById('input-group-b');
+    const labelGroupA = document.getElementById('label-group-a');
+    const labelGroupB = document.getElementById('label-group-b');
+    const groupEqBanner = document.getElementById('group-equation-banner');
+    const groupTotalBadge = document.getElementById('group-total-badge');
+    const groupContainer = document.getElementById('group-visual-container');
+    const groupTextDesc = document.getElementById('group-text-description');
+
+    function updateGroupModule() {
+      groupA = parseInt(inputGroupA.value);
+      groupB = parseInt(inputGroupB.value);
+
+      labelGroupA.textContent = groupA;
+      labelGroupB.textContent = groupB;
+      const total = groupA * groupB;
+      groupTotalBadge.textContent = total;
+
+      // Build repeated addition string: b + b + b ...
+      const terms = Array(groupA).fill(groupB).join(' + ');
+      groupEqBanner.innerHTML = `<span class="text-indigo-600 font-bold">${groupA}</span> &times; <span class="text-teal-600 font-bold">${groupB}</span> = ${terms} = <span class="text-indigo-600 font-bold">${total}</span>`;
+      groupTextDesc.textContent = `Ada ${groupA} wadah, masing-masing wadah memuat ${groupB} butir benda.`;
+
+      // Render containers
+      groupContainer.innerHTML = '';
+      for (let i = 0; i < groupA; i++) {
+        const box = document.createElement('div');
+        box.className = "bg-white p-3 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center justify-between";
+        
+        const badge = document.createElement('span');
+        badge.className = "text-[10px] font-bold text-slate-400 mb-2 uppercase";
+        badge.textContent = `Wadah ${i + 1}`;
+        box.appendChild(badge);
+
+        const marbleWrapper = document.createElement('div');
+        marbleWrapper.className = "flex flex-wrap items-center justify-center gap-1.5 min-h-[50px] max-w-[120px]";
+
+        for (let j = 0; j < groupB; j++) {
+          const marble = document.createElement('div');
+          const color = marbleColors[i % marbleColors.length];
+          marble.className = `w-4 h-4 rounded-full ${color} shadow-inner transition-transform hover:scale-125`;
+          marble.title = `Benda ke-${j + 1} di Wadah ${i + 1}`;
+          marbleWrapper.appendChild(marble);
+        }
+
+        box.appendChild(marbleWrapper);
+
+        const countBadge = document.createElement('span');
+        countBadge.className = "text-xs font-mono font-bold text-slate-600 mt-2 bg-slate-100 px-2 py-0.5 rounded";
+        countBadge.textContent = `${groupB} isi`;
+        box.appendChild(countBadge);
+
+        groupContainer.appendChild(box);
+      }
+    }
+
+    inputGroupA.addEventListener('input', updateGroupModule);
+    inputGroupB.addEventListener('input', updateGroupModule);
+
+    const inputAreaRows = document.getElementById('input-area-rows');
+    const inputAreaCols = document.getElementById('input-area-cols');
+    const labelAreaRows = document.getElementById('label-area-rows');
+    const labelAreaCols = document.getElementById('label-area-cols');
+    const areaCalcText = document.getElementById('area-calc-text');
+    const areaTotalBadge = document.getElementById('area-total-badge');
+    const areaGridElement = document.getElementById('area-grid-element');
+    const hoverCoordText = document.getElementById('hover-coord-text');
+
+    function updateAreaGrid() {
+      areaRows = parseInt(inputAreaRows.value);
+      areaCols = parseInt(inputAreaCols.value);
+
+      labelAreaRows.textContent = areaRows;
+      labelAreaCols.textContent = areaCols;
+
+      const totalArea = areaRows * areaCols;
+      areaTotalBadge.textContent = totalArea;
+
+      areaCalcText.innerHTML = `<span class="text-indigo-600 font-bold">${areaRows} (baris)</span> &times; <span class="text-teal-600 font-bold">${areaCols} (kolom)</span> = <span class="text-indigo-600">${totalArea} satuan luas</span>`;
+
+      // Set CSS Grid Template
+      areaGridElement.style.gridTemplateColumns = `repeat(${areaCols}, minmax(0, 1fr))`;
+      areaGridElement.innerHTML = '';
+
+      for (let r = 1; r <= areaRows; r++) {
+        for (let c = 1; c <= areaCols; c++) {
+          const cell = document.createElement('div');
+          const cellIndex = (r - 1) * areaCols + c;
+          
+          cell.className = "w-7 h-7 sm:w-8 sm:h-8 rounded-md bg-indigo-50 border border-indigo-200 flex items-center justify-center text-[10px] sm:text-xs font-mono font-semibold text-indigo-700 hover:bg-teal-500 hover:text-white cursor-pointer grid-cell-transition select-none";
+          cell.textContent = cellIndex;
+
+          cell.addEventListener('mouseenter', () => {
+            hoverCoordText.textContent = `Baris ${r}, Kolom ${c} (#${cellIndex})`;
+            cell.classList.add('scale-110', 'shadow-md', 'z-10');
+          });
+
+          cell.addEventListener('mouseleave', () => {
+            hoverCoordText.textContent = `Arahkan kursor`;
+            cell.classList.remove('scale-110', 'shadow-md', 'z-10');
+          });
+
+          areaGridElement.appendChild(cell);
+        }
+      }
+    }
+
+    function rotateGridDimensions() {
+      const temp = areaRows;
+      inputAreaRows.value = areaCols;
+      inputAreaCols.value = temp;
+      updateAreaGrid();
+    }
+
+    inputAreaRows.addEventListener('input', updateAreaGrid);
+    inputAreaCols.addEventListener('input', updateAreaGrid);
+
+    const inputFactor1 = document.getElementById('input-factor-1');
+    const inputFactor2 = document.getElementById('input-factor-2');
+    const labelFactor1 = document.getElementById('label-factor-1');
+    const labelFactor2 = document.getElementById('label-factor-2');
+    const intEqBanner = document.getElementById('integer-equation-banner');
+    const intResultValue = document.getElementById('integer-result-value');
+    const intAnalogyText = document.getElementById('integer-analogy-text');
+    const numberLineSvg = document.getElementById('number-line-svg');
+
+    function highlightRules(f1, f2) {
+      const r1 = document.getElementById('rule-pos-pos');
+      const r2 = document.getElementById('rule-pos-neg');
+      const r3 = document.getElementById('rule-neg-pos');
+      const r4 = document.getElementById('rule-neg-neg');
+
+      [r1, r2, r3, r4].forEach(el => {
+        el.className = "p-1.5 rounded bg-white border border-slate-200 text-slate-500 text-center font-normal";
+      });
+
+      if (f1 >= 0 && f2 >= 0) {
+        r1.className = "p-1.5 rounded bg-emerald-50 border-2 border-emerald-500 text-emerald-800 text-center font-bold shadow-sm";
+      } else if (f1 >= 0 && f2 < 0) {
+        r2.className = "p-1.5 rounded bg-amber-50 border-2 border-amber-500 text-amber-800 text-center font-bold shadow-sm";
+      } else if (f1 < 0 && f2 >= 0) {
+        r3.className = "p-1.5 rounded bg-amber-50 border-2 border-amber-500 text-amber-800 text-center font-bold shadow-sm";
+      } else {
+        r4.className = "p-1.5 rounded bg-emerald-50 border-2 border-emerald-500 text-emerald-800 text-center font-bold shadow-sm";
+      }
+    }
+
+    function updateIntegerModule() {
+      intFactor1 = parseInt(inputFactor1.value);
+      intFactor2 = parseInt(inputFactor2.value);
+
+      const sign1 = intFactor1 >= 0 ? `+${intFactor1}` : `${intFactor1}`;
+      const sign2 = intFactor2 >= 0 ? `+${intFactor2}` : `${intFactor2}`;
+      
+      labelFactor1.textContent = sign1;
+      labelFactor2.textContent = sign2;
+
+      const product = intFactor1 * intFactor2;
+      const formattedProduct = product > 0 ? `+${product}` : `${product}`;
+
+      intResultValue.textContent = formattedProduct;
+      intResultValue.className = product >= 0 ? "text-2xl font-black font-mono text-emerald-600" : "text-2xl font-black font-mono text-rose-600";
+
+      intEqBanner.innerHTML = `(${sign1}) &times; (${sign2}) = <span class="${product >= 0 ? 'text-emerald-600' : 'text-rose-600'} font-black">${formattedProduct}</span>`;
+
+      // Analogi teks
+      let arahLangkah = intFactor1 >= 0 ? "Maju (menghadap kanan)" : "Mundur (menghadap kiri/membalik arah)";
+      let jenisLangkah = intFactor2 >= 0 ? `langkah ke depan sejauh ${Math.abs(intFactor2)} satuan` : `langkah ke belakang sejauh ${Math.abs(intFactor2)} satuan`;
+      intAnalogyText.innerHTML = `Melakukan <strong>${Math.abs(intFactor1)} kali iterasi</strong>. Sifat gerak: <strong>${arahLangkah}</strong> dengan setiap gerakan mengambil <strong>${jenisLangkah}</strong>. Posisi akhir berada di titik <strong>${formattedProduct}</strong>.`;
+
+      highlightRules(intFactor1, intFactor2);
+      renderNumberLine(product);
+    }
+
+    function renderNumberLine(target) {
+      // Coordinate space: range -50 to 50, map to svg X: 30 to 670 (width 700)
+      const minVal = -50;
+      const maxVal = 50;
+      const svgWidth = 700;
+      const padding = 35;
+      const scaleX = (val) => padding + ((val - minVal) / (maxVal - minVal)) * (svgWidth - 2 * padding);
+      
+      const yAxis = 75;
+      const originX = scaleX(0);
+      const targetX = scaleX(target);
+
+      let ticksHtml = '';
+      for (let v = -50; v <= 50; v += 10) {
+        const x = scaleX(v);
+        const isOrigin = v === 0;
+        ticksHtml += `
+          <line x1="${x}" y1="${yAxis - (isOrigin ? 8 : 4)}" x2="${x}" y2="${yAxis + (isOrigin ? 8 : 4)}" stroke="${isOrigin ? '#475569' : '#94a3b8'}" stroke-width="${isOrigin ? '2.5' : '1.5'}" />
+          <text x="${x}" y="${yAxis + 20}" font-size="10" font-family="'JetBrains Mono', monospace" fill="${isOrigin ? '#0f172a' : '#64748b'}" font-weight="${isOrigin ? 'bold' : 'normal'}" text-anchor="middle">${v}</text>
+        `;
+      }
+
+      // Arc jump representation
+      const arcPath = `M ${originX} ${yAxis} Q ${(originX + targetX) / 2} ${yAxis - (Math.abs(target) * 0.8 + 20)} ${targetX} ${yAxis}`;
+      const arcColor = target >= 0 ? '#10b981' : '#f43f5e';
+
+      numberLineSvg.innerHTML = `
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#475569" />
+          </marker>
+          <marker id="arc-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="${arcColor}" />
+          </marker>
+        </defs>
+
+        <!-- Main Axis -->
+        <line x1="${padding - 15}" y1="${yAxis}" x2="${svgWidth - padding + 15}" y2="${yAxis}" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)" marker-start="url(#arrow)" />
+        
+        <!-- Ticks -->
+        ${ticksHtml}
+
+        <!-- Arc Jump -->
+        ${target !== 0 ? `<path d="${arcPath}" fill="none" stroke="${arcColor}" stroke-width="2.5" stroke-dasharray="4,4" marker-end="url(#arc-arrow)" />` : ''}
+
+        <!-- Origin Pin -->
+        <circle cx="${originX}" cy="${yAxis}" r="4" fill="#64748b" />
+
+        <!-- Target Point Marker -->
+        <circle cx="${targetX}" cy="${yAxis}" r="7" fill="${arcColor}" class="transition-all duration-300" />
+        <circle cx="${targetX}" cy="${yAxis}" r="12" fill="${arcColor}" opacity="0.25" class="animate-pulse" />
+
+        <!-- Walker Icon/Label -->
+        <g transform="translate(${targetX}, ${yAxis - 38})" class="walker-bounce">
+          <rect x="-24" y="-14" width="48" height="20" rx="6" fill="#1e293b" />
+          <text x="0" y="0" font-size="11" font-weight="bold" font-family="'JetBrains Mono', monospace" fill="#ffffff" text-anchor="middle" dominant-baseline="middle">${target > 0 ? '+' + target : target}</text>
+        </g>
+      `;
+    }
+
+    inputFactor1.addEventListener('input', updateIntegerModule);
+    inputFactor2.addEventListener('input', updateIntegerModule);
+
+    const quizScoreEl = document.getElementById('quiz-score');
+    const quizAttemptedEl = document.getElementById('quiz-attempted');
+    const quizBadgeType = document.getElementById('quiz-badge-type');
+    const quizPrompt = document.getElementById('quiz-question-prompt');
+    const quizVisualStage = document.getElementById('quiz-visual-stage');
+    const quizChoicesContainer = document.getElementById('quiz-choices-container');
+    const quizFeedbackBox = document.getElementById('quiz-feedback-box');
+
+    function resetQuizScore() {
+      quizScoreCount = 0;
+      quizAttemptsCount = 0;
+      quizScoreEl.textContent = '0';
+      quizAttemptedEl.textContent = '0';
+      generateNewQuestion();
+    }
+
+    function generateNewQuestion() {
+      quizLocked = false;
+      quizFeedbackBox.classList.add('hidden');
+      quizChoicesContainer.innerHTML = '';
+      
+      // Question types: 0 = Group, 1 = Area, 2 = Integers
+      const qType = Math.floor(Math.random() * 3);
+
+      if (qType === 0) {
+        // Repeated Addition Group question
+        quizBadgeType.textContent = "Tipe: Penjumlahan Berulang";
+        const a = Math.floor(Math.random() * 5) + 2; // 2 to 6
+        const b = Math.floor(Math.random() * 4) + 2; // 2 to 5
+        currentQuizAnswer = a * b;
+
+        quizPrompt.innerHTML = `Sebuah gambar menunjukkan <span class="text-indigo-600 font-bold">${a} wadah</span>, dan setiap wadah berisi <span class="text-teal-600 font-bold">${b} kelereng</span>. Berapakah jumlah total kelereng?`;
+
+        // Render mini visual
+        let groupHtml = `<div class="flex flex-wrap items-center justify-center gap-2">`;
+        for (let i = 0; i < a; i++) {
+          groupHtml += `<div class="bg-white p-2 rounded-lg border border-slate-300 flex flex-wrap gap-1 max-w-[60px] justify-center shadow-xs">`;
+          for (let j = 0; j < b; j++) {
+            groupHtml += `<span class="w-3 h-3 rounded-full bg-indigo-500 inline-block"></span>`;
+          }
+          groupHtml += `</div>`;
+        }
+        groupHtml += `</div>`;
+        quizVisualStage.innerHTML = groupHtml;
+
+        renderQuizChoices(currentQuizAnswer);
+
+      } else if (qType === 1) {
+        // Area Grid question
+        quizBadgeType.textContent = "Tipe: Model Luas (Grid)";
+        const rows = Math.floor(Math.random() * 4) + 3; // 3 to 6
+        const cols = Math.floor(Math.random() * 5) + 3; // 3 to 7
+        currentQuizAnswer = rows * cols;
+
+        quizPrompt.innerHTML = `Grid berikut memiliki tinggi <span class="text-indigo-600 font-bold">${rows} satuan</span> dan lebar <span class="text-teal-600 font-bold">${cols} satuan</span>. Berapa satuan luas persegi panjang tersebut?`;
+
+        let gridHtml = `<div class="inline-grid gap-1 bg-white p-2 rounded-lg border border-slate-300" style="grid-template-columns: repeat(${cols}, minmax(0, 1fr));">`;
+        for (let k = 0; k < rows * cols; k++) {
+          gridHtml += `<div class="w-5 h-5 rounded-sm bg-teal-100 border border-teal-200"></div>`;
+        }
+        gridHtml += `</div>`;
+        quizVisualStage.innerHTML = gridHtml;
+
+        renderQuizChoices(currentQuizAnswer);
+
+      } else {
+        // Integer multiplication rule
+        quizBadgeType.textContent = "Tipe: Bilangan Bulat (+ / -)";
+        const f1 = (Math.floor(Math.random() * 6) + 2) * (Math.random() > 0.5 ? 1 : -1);
+        const f2 = (Math.floor(Math.random() * 6) + 2) * (Math.random() > 0.5 ? 1 : -1);
+        currentQuizAnswer = f1 * f2;
+
+        const s1 = f1 > 0 ? `+${f1}` : `${f1}`;
+        const s2 = f2 > 0 ? `+${f2}` : `${f2}`;
+
+        quizPrompt.innerHTML = `Tentukan hasil perhitungan bilangan bulat berikut: <span class="font-mono font-bold text-indigo-600 text-lg">(${s1}) &times; (${s2})</span>`;
+
+        quizVisualStage.innerHTML = `
+          <div class="text-center font-mono text-xl sm:text-2xl font-bold bg-white px-6 py-4 rounded-xl border border-slate-200 text-slate-700">
+            (${s1}) &times; (${s2}) = ?
+          </div>
+        `;
+
+        renderQuizChoices(currentQuizAnswer);
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    function renderQuizChoices(correctAnswer) {
+      // Generate 3 distractors
+      const choicesSet = new Set();
+      choicesSet.add(correctAnswer);
+
+      while (choicesSet.size < 4) {
+        let offset = (Math.floor(Math.random() * 7) + 1) * (Math.random() > 0.5 ? 1 : -1);
+        let fake = correctAnswer + offset;
+        // Occasionally flip sign for integer multiplication distractors
+        if (Math.random() > 0.6) fake = -correctAnswer;
+        if (fake !== correctAnswer) choicesSet.add(fake);
+      }
+
+      const shuffled = Array.from(choicesSet).sort(() => Math.random() - 0.5);
+
+      shuffled.forEach(choice => {
+        const btn = document.createElement('button');
+        btn.className = "py-3 px-4 rounded-xl bg-slate-100 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-300 font-mono text-base font-bold text-slate-800 transition duration-150";
+        btn.textContent = choice > 0 ? `+${choice}` : `${choice}`;
+        btn.onclick = () => handleQuizAnswer(choice, btn);
+        quizChoicesContainer.appendChild(btn);
+      });
+    }
+
+    function handleQuizAnswer(selected, chosenBtn) {
+      if (quizLocked) return;
+      quizLocked = true;
+
+      quizAttemptsCount++;
+      quizAttemptedEl.textContent = quizAttemptsCount;
+
+      const isCorrect = selected === currentQuizAnswer;
+
+      if (isCorrect) {
+        quizScoreCount++;
+        quizScoreEl.textContent = quizScoreCount;
+        chosenBtn.classList.remove('bg-slate-100', 'hover:bg-indigo-50');
+        chosenBtn.classList.add('bg-emerald-500', 'text-white', 'border-emerald-600');
+
+        quizFeedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center gap-2.5 block";
+        quizFeedbackBox.innerHTML = `
+          <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 flex-shrink-0"></i>
+          <div>
+            <strong>Luar biasa, jawabanmu benar!</strong> Konsep perkalian telah kamu pahami dengan tepat.
+          </div>
+        `;
+      } else {
+        chosenBtn.classList.remove('bg-slate-100', 'hover:bg-indigo-50');
+        chosenBtn.classList.add('bg-rose-500', 'text-white', 'border-rose-600');
+
+        quizFeedbackBox.className = "p-4 rounded-xl text-sm font-medium bg-amber-50 border border-amber-200 text-amber-900 flex items-center gap-2.5 block";
+        quizFeedbackBox.innerHTML = `
+          <i data-lucide="help-circle" class="w-5 h-5 text-amber-600 flex-shrink-0"></i>
+          <div>
+            <strong>Hampir tepat!</strong> Jawaban yang benar adalah <span class="font-mono font-bold">${currentQuizAnswer > 0 ? '+' + currentQuizAnswer : currentQuizAnswer}</span>. Coba analisis kembali gambarnya atau perhatikan aturan tanda!
+          </div>
+        `;
+      }
+
+      if (window.lucide) lucide.createIcons();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateGroupModule();
+      updateAreaGrid();
+      updateIntegerModule();
+      if (window.lucide) lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
